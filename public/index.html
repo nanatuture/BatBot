@@ -2,73 +2,74 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>BatBot - Chat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-    header { background: #222; color: white; padding: 15px; text-align: center; }
-    #chat { flex: 1; padding: 10px; overflow-y: auto; background: #f5f5f5; }
-    .message { margin: 10px 0; padding: 10px; border-radius: 8px; max-width: 80%; }
-    .user { background: #d1e7dd; margin-left: auto; }
-    .bot { background: #fff; margin-right: auto; border: 1px solid #ddd; }
-    footer { display: flex; padding: 10px; background: #fff; border-top: 1px solid #ddd; }
-    input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-    input[type="file"] { margin-left: 10px; }
-    button { margin-left: 10px; padding: 10px 15px; border: none; border-radius: 5px; background: #222; color: white; cursor: pointer; }
-    nav { display: flex; justify-content: space-around; padding: 10px; background: #eee; }
-    nav a { text-decoration: none; color: #222; font-weight: bold; }
-  </style>
+  <title>BatBot – Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>BatBot - Chat</h1>
+<body class="bg-gray-50 flex flex-col h-screen font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow-md p-4 flex items-center justify-between">
+    <h1 class="text-lg font-bold text-gray-800">BatBot</h1>
+    <a href="report.html" class="text-sm text-indigo-600 font-medium">Voir Rapport</a>
   </header>
-  <div id="chat"></div>
-  <footer>
-    <input type="text" id="messageInput" placeholder="Écris un message ou une question...">
-    <input type="file" id="fileInput">
-    <button onclick="sendMessage()">Envoyer</button>
-  </footer>
-  <nav>
-    <a href="index.html">Chat</a>
-    <a href="report.html">Rapport</a>
-  </nav>
+
+  <!-- Zone de messages -->
+  <main id="chat" class="flex-1 overflow-y-auto p-4 space-y-4">
+    <!-- Exemple message utilisateur -->
+    <div class="flex justify-end">
+      <div class="bg-indigo-500 text-white px-4 py-2 rounded-2xl max-w-xs">
+        Bonjour, voici un exemple de message.
+      </div>
+    </div>
+    <!-- Exemple message IA -->
+    <div class="flex justify-start">
+      <div class="bg-gray-200 text-gray-800 px-4 py-2 rounded-2xl max-w-xs">
+        Bonjour 👋, je suis BatBot. Comment puis-je vous aider ?
+      </div>
+    </div>
+  </main>
+
+  <!-- Barre de saisie -->
+  <form id="chat-form" class="bg-white p-3 flex items-center gap-2 border-t">
+    <label for="file-upload" class="cursor-pointer flex-shrink-0">
+      📎
+      <input id="file-upload" type="file" class="hidden" />
+    </label>
+    <input id="user-input" type="text" placeholder="Écrivez un message..."
+      class="flex-1 border rounded-2xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-2xl">Envoyer</button>
+  </form>
 
   <script>
-    const chat = document.getElementById("chat");
+    const chat = document.getElementById('chat');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('user-input');
+    const fileInput = document.getElementById('file-upload');
 
-    function addMessage(text, sender="user") {
-      const div = document.createElement("div");
-      div.className = "message " + sender;
-      div.textContent = text;
-      chat.appendChild(div);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const text = input.value.trim();
+      const file = fileInput.files[0];
+
+      if (!text && !file) return;
+
+      // Affiche message utilisateur
+      const userMsg = document.createElement('div');
+      userMsg.className = "flex justify-end";
+      userMsg.innerHTML = `<div class="bg-indigo-500 text-white px-4 py-2 rounded-2xl max-w-xs">${text || file.name}</div>`;
+      chat.appendChild(userMsg);
+
+      // Scroll en bas
       chat.scrollTop = chat.scrollHeight;
-    }
 
-    async function sendMessage() {
-      const input = document.getElementById("messageInput");
-      const fileInput = document.getElementById("fileInput");
-
-      let formData = new FormData();
-      formData.append("text", input.value);
-      if (fileInput.files[0]) {
-        formData.append("file", fileInput.files[0]);
-      }
-
-      addMessage(input.value, "user");
-
-      // Envoi vers ton webhook n8n
-      let res = await fetch("https://<TON_N8N_URL>/webhook/ingest-evidence", {
-        method: "POST",
-        body: formData
-      });
-
-      let data = await res.json();
-      addMessage(data.reply || "Analyse en cours...", "bot");
-
+      // Reset
       input.value = "";
       fileInput.value = "";
-    }
+
+      // 👉 Ici tu envoies texte + fichier vers n8n webhook
+    });
   </script>
 </body>
 </html>
+
