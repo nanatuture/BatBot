@@ -2,59 +2,49 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>BatBot - Rapport</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; }
-    header { background: #222; color: white; padding: 15px; text-align: center; }
-    section { padding: 20px; }
-    .behavior { background: #f5f5f5; padding: 10px; margin: 10px 0; border-radius: 8px; }
-    input[type="email"] { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-    button { margin-left: 10px; padding: 10px 15px; border: none; border-radius: 5px; background: #222; color: white; cursor: pointer; }
-    nav { display: flex; justify-content: space-around; padding: 10px; background: #eee; }
-    nav a { text-decoration: none; color: #222; font-weight: bold; }
-  </style>
+  <title>BatBot – Rapport</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>Rapport - BatBot</h1>
+<body class="bg-gray-50 flex flex-col h-screen font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow-md p-4 flex items-center justify-between">
+    <h1 class="text-lg font-bold text-gray-800">Rapport</h1>
+    <a href="index.html" class="text-sm text-indigo-600 font-medium">Retour Chat</a>
   </header>
-  <section>
-    <h2>Résumé des comportements détectés</h2>
-    <div class="behavior">
-      <h3>Gaslighting</h3>
-      <p>15 occurrences - Voir pièces jointes</p>
-    </div>
-    <div class="behavior">
-      <h3>Contrôle coercitif</h3>
-      <p>7 occurrences - Voir pièces jointes</p>
-    </div>
 
-    <h2>Exporter ou envoyer</h2>
-    <button onclick="exportPDF()">Exporter en PDF</button>
-    <br><br>
-    <input type="email" id="email" placeholder="Adresse e-mail">
-    <button onclick="sendEmail()">Envoyer le rapport</button>
-  </section>
-  <nav>
-    <a href="index.html">Chat</a>
-    <a href="report.html">Rapport</a>
-  </nav>
+  <!-- Contenu -->
+  <main class="flex-1 overflow-y-auto p-4 space-y-6">
+    <section>
+      <h2 class="text-md font-semibold text-gray-700">Résumé des comportements</h2>
+      <ul class="space-y-2 mt-2">
+        <li class="bg-white p-3 rounded-xl shadow-sm border">
+          <span class="font-medium text-red-500">Gaslighting :</span>
+          12 occurrences
+        </li>
+        <li class="bg-white p-3 rounded-xl shadow-sm border">
+          <span class="font-medium text-yellow-500">Manipulation :</span>
+          8 occurrences
+        </li>
+        <li class="bg-white p-3 rounded-xl shadow-sm border">
+          <span class="font-medium text-blue-500">Contrôle coercitif :</span>
+          4 occurrences
+        </li>
+      </ul>
+    </section>
 
-  <script>
-    function exportPDF() {
-      alert("Fonction export PDF reliée à n8n à implémenter");
-    }
-
-    async function sendEmail() {
-      const email = document.getElementById("email").value;
-      let res = await fetch("https://<TON_N8N_URL>/webhook/send-report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-      alert("Rapport envoyé à " + email);
-    }
-  </script>
+    <section>
+      <h2 class="text-md font-semibold text-gray-700">Actions</h2>
+      <div class="flex flex-col gap-3 mt-3">
+        <button class="bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-xl">📄 Exporter en PDF</button>
+        <div class="flex gap-2">
+          <input type="email" placeholder="Entrer un email"
+            class="flex-1 border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl">Envoyer</button>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
+
